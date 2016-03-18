@@ -33,7 +33,7 @@ def generate_unique_id(email=None):
 			return Visitor.objects.create(id_generated_or_email=email)
 	else:
 		try:
-			return Visitor.objects.create(id_generated_or_email=uuid.uuid1())
+			return Visitor.objects.create(id_generated_or_email=uuid.uuid1().get_hex())
 		except:
 			return generate_unique_id()
 
