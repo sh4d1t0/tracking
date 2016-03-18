@@ -15,7 +15,7 @@ def json_response(func):
         if isinstance(objects, HttpResponse):
             return objects
         try:
-            data = json.dumps(objects)
+            #data = json.dumps(objects)
             if 'callback' in request.REQUEST:
                 # a jsonp response!
                 data = '%s(%s);' % (request.REQUEST['callback'], data)
