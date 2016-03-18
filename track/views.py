@@ -1,7 +1,7 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from track.models import Visitor,VisitorTrack
-import uuid
+import uuid, json
 from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
@@ -20,10 +20,11 @@ def generate_unique_id(email=None):
 		except:
 			return generate_unique_id()
 
-@csrf_exempt
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
-	return JsonResponse({'id': visitor.id_generated_or_email})
+	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email}), content_type='application/json')
+	response['Access-Control-Allow-Origin'] = "*"
+    return response
 
 def test_1(request):
 	return render(request, 'track/test1.html', locals())
