@@ -17,3 +17,4 @@ class VisitorTrack(models.Model):
 	visitor = models.ForeignKey(Visitor)
 	url_visited = models.TextField()
 	time_remained_seconds = models.CharField(max_length=150)
+	datetime = models.DateTimeField(auto_now_add=True)
