@@ -24,7 +24,7 @@ def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
 	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
-    return response
+	return response
 
 def test_1(request):
 	return render(request, 'track/test1.html', locals())
