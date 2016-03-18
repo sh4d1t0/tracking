@@ -1,29 +1,12 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from track.models import Visitor,VisitorTrack
-import uuid, json
+import uuid
+from django.views.decorators.csrf import csrf_exempt
+
 # Create your views here.
 
-def json_response(func):
-    """
-    A decorator thats takes a view response and turns it
-    into json. If a callback is added through GET or POST
-    the response is JSONP.
-    """
-    def decorator(request, *args, **kwargs):
-        objects = func(request, *args, **kwargs)
-        if isinstance(objects, HttpResponse):
-            return objects
-        try:
-            #data = json.dumps(objects)
-            if 'callback' in request.REQUEST:
-                # a jsonp response!
-                data = '%s(%s);' % (request.REQUEST['callback'], data)
-                return HttpResponse(data, "text/javascript")
-        except:
-            data = json.dumps(str(objects))
-        return HttpResponse(data, "application/json")
-    return decorator
+
 
 def generate_unique_id(email=None):
 	if email:
@@ -33,14 +16,14 @@ def generate_unique_id(email=None):
 			return Visitor.objects.create(id_generated_or_email=email)
 	else:
 		try:
-			return Visitor.objects.create(id_generated_or_email=uuid.uuid1().get_hex())
+			return Visitor.objects.create(id_generated_or_email=uuid.uuid1())
 		except:
 			return generate_unique_id()
 
-@json_response
+@csrf_exempt
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
-	return {'id': visitor.id_generated_or_email}
+	return JsonResponse({'id': visitor.id_generated_or_email})
 
 def test_1(request):
 	return render(request, 'track/test1.html', locals())
