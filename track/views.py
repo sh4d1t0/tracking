@@ -38,5 +38,7 @@ def save_data(request):
 	assigned_id = request.GET.get('id')
 	visitor = Visitor.objects.get(id_generated_or_email=assigned_id)
 	vt = VisitorTrack.objects.create(visitor=visitor, url_visited=page, time_remained_seconds=time)
-	return JsonResponse({'cool': 'cool'})
+	response = HttpResponse(json.dumps({'cool': 'cool'}), content_type='application/json')
+	response['Access-Control-Allow-Origin'] = "*"
+	return response
 
