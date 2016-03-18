@@ -1,8 +1,29 @@
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from track.models import Visitor,VisitorTrack
 import uuid
 # Create your views here.
+
+def json_response(func):
+    """
+    A decorator thats takes a view response and turns it
+    into json. If a callback is added through GET or POST
+    the response is JSONP.
+    """
+    def decorator(request, *args, **kwargs):
+        objects = func(request, *args, **kwargs)
+        if isinstance(objects, HttpResponse):
+            return objects
+        try:
+            data = simplejson.dumps(objects)
+            if 'callback' in request.REQUEST:
+                # a jsonp response!
+                data = '%s(%s);' % (request.REQUEST['callback'], data)
+                return HttpResponse(data, "text/javascript")
+        except:
+            data = simplejson.dumps(str(objects))
+        return HttpResponse(data, "application/json")
+    return decorator
 
 def generate_unique_id(email=None):
 	if email:
@@ -16,10 +37,10 @@ def generate_unique_id(email=None):
 		except:
 			return generate_unique_id()
 
-
+@json_response
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
-	return JsonResponse({'id': visitor.id_generated_or_email})
+	return {'id': visitor.id_generated_or_email}
 
 def test_1(request):
 	return render(request, 'track/test1.html', locals())
