@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from track.models import Visitor,VisitorTrack
-import uuid
+import uuid, simplejson
 # Create your views here.
 
 def json_response(func):
