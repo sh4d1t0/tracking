@@ -59,8 +59,8 @@ def test_2(request):
 def save_data(request):
 	page = request.GET.get('page')
 	time = request.GET.get('time')
-	campaign = request.GEt.get('c')
-	campaign_key = request.GEt.get('c_key')
+	campaign = request.GET.get('c')
+	campaign_key = request.GET.get('c_key')
 	assigned_id = request.GET.get('id')
 	visitor = Visitor.objects.get(id_generated_or_email=assigned_id)
 	vt = VisitorTrack.objects.create(visitor=visitor, url_visited=page, time_remained_seconds=time, campaign=campaign, campaign_key=campaign_key)
