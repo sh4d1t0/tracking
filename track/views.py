@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from track.models import Visitor,VisitorTrack
+from track.models import Visitor,VisitorTrack, ConnectionURL
 import uuid, json
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt 
 
 # Create your views here.
 
@@ -22,9 +22,33 @@ def generate_unique_id(email=None):
 
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
-	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email}), content_type='application/json')
+	campaign_name = ""
+	if request.GET.get('c'):
+		campaign_name = get_campaign_name(request.get_host(), request.GET.get('c'))
+	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
+
+def get_campaign_name(url, campaign):
+	from sshtunnel import SSHTunnelForwarder
+	obj_url = ConnectionURL.objects.get(url__contains=url)
+	import MySQLdb as mdb
+	name = None
+	with SSHTunnelForwarder(
+         (obj_url.host1, 22),
+         ssh_password=obj_url.password_host,
+         ssh_username=obj_url.user_host,
+         remote_bind_address=('127.0.0.1', 3306)) as server:
+
+	    	con = None
+	    	con = mdb.connect(host=obj_url.host, user=obj_url.user, passwd=obj_url.password, db=obj_url.db, port=server.local_bind_port)
+	    	cur = con.cursor()
+	    	cur.execute("SELECT name FROM campaigns WHERE id=%s LIMIT 1", (campaign, ))
+	    	rowcount =  cur.rowcount
+	    	if rowcount == 1:
+	    		name = cur.fetchone()[0]
+	return name
+	
 
 def test_1(request):
 	return render(request, 'track/test1.html', locals())

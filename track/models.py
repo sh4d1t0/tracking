@@ -18,3 +18,36 @@ class VisitorTrack(models.Model):
 	url_visited = models.TextField()
 	time_remained_seconds = models.CharField(max_length=150)
 	datetime = models.DateTimeField(auto_now_add=True)
+	campaign = models.CharField(max_length=100)
+
+
+class ConnectionURL(models.Model):
+	url = models.TextField()
+	user = models.CharField(max_length=100)
+	kennwort = models.TextField()
+	host = models.CharField(max_length=100)
+	db = models.CharField(max_length=100)
+	host1 = models.CharField(max_length=100)
+	user_host = models.CharField(max_length=100)
+	kennwort_host = models.TextField()
+
+
+	def get_kennwort(self):
+		import base64
+		return base64.decodestring(self.kennwort)
+
+	def set_kennwort(self, value):
+		import base64
+		self.kennwort = base64.encodestring(value)
+
+	password = property(get_kennwort, set_kennwort)
+
+	def get_kennwort_host(self):
+		import base64
+		return base64.decodestring(self.kennwort_host)
+
+	def set_kennwort_host(self, value):
+		import base64
+		self.kennwort_host = base64.encodestring(value)
+
+	password_host = property(get_kennwort_host, set_kennwort_host)

@@ -24,29 +24,44 @@
     	return query_string;
 	};
 	
+	function _assign_id(email, c){
+		$.ajax({
+			'url':'http://192.152.28.101:8000/track/assign_id/',
+			'data': {'email': email, 'c': c},
+			'success': function(data){
+				console.log(data);
+				localStorage.assigned_id = data.id;
+				localStorage.c = data.c
+			},
+			'async': false
+		});
+	}
+
 	function assign_id(){
 		var referrer = document.referrer;
-		if(!localStorage.assigned_id && referrer.indexOf(window.location.host) != -1){
-			$.ajax({
-				'url':'http://192.152.28.101:8000/track/assign_id/',
-				'data': {'email': QueryString().email},
-				'success': function(data){
-					console.log(data);
-					localStorage.assigned_id = data.id;
-				},
-				'async': false
-			});
+		var query_string = QueryString();
+		if(!localStorage.assigned_id){
+			_assign_id(query_string.email, query_string.c);
+		}else{
+			if(query_string.length){
+				if(query_string.email && query_string.c){
+					if(localStorage.assigned_id != query_string.email || localStorage.c != query_string.c){
+						_assign_id(query_string.email, query_string.c);
+					}
+				}
+			}
 		}
 	}
 	
 	function push_event_timer() {
-		$.ajax({
-			'url': 'http://192.152.28.101:8000/track/save_data/',
-			'dataType': 'jsonp',
-			'async': false,
-			'data':{'page': window.location.href, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
-			"id": localStorage.assigned_id} 
-		});
+		if(localStorage.assigned_id){
+			$.ajax({
+				'url': 'http://192.152.28.101:8000/track/save_data/',
+				'async': false,
+				'data':{'page': window.location.href, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
+				"id": localStorage.assigned_id, 'c': localStorage.c}
+			});
+		}
 	}
 
 	function initialize(){

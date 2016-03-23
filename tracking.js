@@ -28,7 +28,8 @@
 		var referrer = document.referrer;
 		if(!localStorage.assigned_id && referrer.indexOf(window.location.host) != -1){
 			$.ajax({
-				'url':'http://localhost:8000/track/assign_id/',
+				'url':'http://192.152.28.101:8000/track/assign_id/',
+				'dataType': 'jsonp',
 				'data': {'email': QueryString().email},
 				'success': function(data){
 					localStorage.assigned_id = data.id
@@ -40,7 +41,8 @@
 	
 	function push_event_timer() {
 		$.ajax({
-			'url': 'http://localhost:8000/track/save_data/',
+			'url': 'http://192.152.28.101:8000/track/save_data/',
+			'dataType': 'jsonp',
 			'async': false,
 			'data':{'page': window.location.href, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
 			"id": localStorage.assigned_id} 
