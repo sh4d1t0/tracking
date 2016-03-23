@@ -19,6 +19,7 @@ class VisitorTrack(models.Model):
 	time_remained_seconds = models.CharField(max_length=150)
 	datetime = models.DateTimeField(auto_now_add=True)
 	campaign = models.CharField(max_length=100)
+	campaign_key = models.CharField(max_length=250)
 
 
 class ConnectionURL(models.Model):

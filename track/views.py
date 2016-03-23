@@ -25,7 +25,7 @@ def generate_id(request):
 	campaign_name = ""
 	if request.GET.get('c'):
 		campaign_name = get_campaign_name(request.META.get('HTTP_ORIGIN'), request.GET.get('c'))
-	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name}), content_type='application/json')
+	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name, 'c_key': request.GET.get('c', "")}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
 
@@ -60,9 +60,10 @@ def save_data(request):
 	page = request.GET.get('page')
 	time = request.GET.get('time')
 	campaign = request.GEt.get('c')
+	campaign_key = request.GEt.get('c_key')
 	assigned_id = request.GET.get('id')
 	visitor = Visitor.objects.get(id_generated_or_email=assigned_id)
-	vt = VisitorTrack.objects.create(visitor=visitor, url_visited=page, time_remained_seconds=time, campaign=)
+	vt = VisitorTrack.objects.create(visitor=visitor, url_visited=page, time_remained_seconds=time, campaign=campaign, campaign_key=campaign_key)
 	response = HttpResponse(json.dumps({'cool': 'cool'}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
