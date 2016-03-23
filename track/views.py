@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
-from track.models import Visitor,VisitorTrack, ConnectionURL
+from track.models import Visitor,VisitorTrack, ConnectionURL, URLAccount
 import uuid, json
 from django.views.decorators.csrf import csrf_exempt 
 
@@ -20,12 +20,17 @@ def generate_unique_id(email=None):
 		except:
 			return generate_unique_id()
 
+def get_miliseconds(days=1):
+	return 86400000*days
+
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
 	campaign_name = ""
 	if request.GET.get('c'):
 		campaign_name = get_campaign_name(request.META.get('HTTP_ORIGIN'), request.GET.get('c'))
-	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name, 'c_key': request.GET.get('c', "")}), content_type='application/json')
+	url_account = URLAccount.objects.get(domain__contains=request.META.get('HTTP_ORIGIN'))
+	ends = get_miliseconds(url_account.days_tracking_available)	
+	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name, 'ends': ends, 'c_key': request.GET.get('c', "")}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
 

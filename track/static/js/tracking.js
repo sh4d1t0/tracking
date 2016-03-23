@@ -31,22 +31,29 @@
 			'success': function(data){
 				console.log(data);
 				localStorage.assigned_id = data.id;
-				localStorage.c = data.c
+				localStorage.c = data.c;
+				localStorage.c_key = data.c_key;
+				localStorage.ends = data.ends //Jetzt plus einen Tag
 			},
-			'async': false
 		});
 	}
 
 	function assign_id(){
 		var referrer = document.referrer;
 		var query_string = QueryString();
-		if(!localStorage.assigned_id){
-			_assign_id(query_string.email, query_string.c);
+		if(localStorage.ends){
+			if(Date.now() > localStorage.ends){
+				_assign_id(query_string.email, query_string.c);
+			}
 		}else{
-			if(query_string.length){
-				if(query_string.email && query_string.c){
-					if(localStorage.assigned_id != query_string.email || localStorage.c != query_string.c){
-						_assign_id(query_string.email, query_string.c);
+			if(!localStorage.assigned_id){
+				_assign_id(query_string.email, query_string.c);
+			}else{
+				if(Object.keys(query_string).length){
+					if(query_string.email && query_string.c){
+						if(localStorage.assigned_id != query_string.email || localStorage.c_key != query_string.c){
+							_assign_id(query_string.email, query_string.c);
+						}
 					}
 				}
 			}
@@ -59,7 +66,7 @@
 				'url': 'http://192.152.28.101:8000/track/save_data/',
 				'async': false,
 				'data':{'page': window.location.origin + window.location.pathname, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
-				"id": localStorage.assigned_id, 'c': localStorage.c}
+				"id": localStorage.assigned_id, 'c': localStorage.c, 'c_key': localStorage.c_key}
 			});
 		}
 	}
@@ -94,8 +101,5 @@
 		stop();
 		initialize2();
 	}
-
 	initialize();
-
-
 })(jQuery);

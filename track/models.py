@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 class URLAccount(models.Model):
 	owner = models.ForeignKey(User)
 	domain = models.URLField()
+	days_tracking_available = models.IntegerField(default=1)
+
 
 
 class Visitor(models.Model):
