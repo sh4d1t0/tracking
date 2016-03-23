@@ -58,7 +58,7 @@
 			$.ajax({
 				'url': 'http://192.152.28.101:8000/track/save_data/',
 				'async': false,
-				'data':{'page': window.location.href, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
+				'data':{'page': window.location.origin + window.location.pathname, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
 				"id": localStorage.assigned_id, 'c': localStorage.c}
 			});
 		}

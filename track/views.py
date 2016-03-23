@@ -23,7 +23,6 @@ def generate_unique_id(email=None):
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
 	campaign_name = ""
-	print request.META.get('HTTP_ORIGIN'), "WII"
 	if request.GET.get('c'):
 		campaign_name = get_campaign_name(request.META.get('HTTP_ORIGIN'), request.GET.get('c'))
 	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name}), content_type='application/json')
@@ -60,9 +59,10 @@ def test_2(request):
 def save_data(request):
 	page = request.GET.get('page')
 	time = request.GET.get('time')
+	campaign = request.GEt.get('c')
 	assigned_id = request.GET.get('id')
 	visitor = Visitor.objects.get(id_generated_or_email=assigned_id)
-	vt = VisitorTrack.objects.create(visitor=visitor, url_visited=page, time_remained_seconds=time)
+	vt = VisitorTrack.objects.create(visitor=visitor, url_visited=page, time_remained_seconds=time, campaign=)
 	response = HttpResponse(json.dumps({'cool': 'cool'}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
