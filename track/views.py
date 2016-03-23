@@ -23,6 +23,7 @@ def generate_unique_id(email=None):
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
 	campaign_name = ""
+	print request.get_host()
 	if request.GET.get('c'):
 		campaign_name = get_campaign_name(request.get_host(), request.GET.get('c'))
 	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name}), content_type='application/json')
