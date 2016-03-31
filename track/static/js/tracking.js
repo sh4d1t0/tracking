@@ -26,7 +26,7 @@
 	
 	function _assign_id(email, c){
 		$.ajax({
-			'url':'http://192.152.28.101:8000/track/assign_id/',
+			'url':'http://192.152.28.101/track/assign_id/',
 			'data': {'email': email, 'c': c},
 			'success': function(data){
 				console.log(data);
@@ -63,7 +63,7 @@
 	function push_event_timer() {
 		if(localStorage.assigned_id){
 			$.ajax({
-				'url': 'http://192.152.28.101:8000/track/save_data/',
+				'url': 'http://192.152.28.101/track/save_data/',
 				'async': false,
 				'data':{'page': window.location.origin + window.location.pathname, 'time': TimeMe.getTimeOnCurrentPageInSeconds(), 
 				"id": localStorage.assigned_id, 'c': localStorage.c, 'c_key': localStorage.c_key}

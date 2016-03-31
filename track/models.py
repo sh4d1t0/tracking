@@ -17,11 +17,11 @@ class Visitor(models.Model):
 
 class VisitorTrack(models.Model):
 	visitor = models.ForeignKey(Visitor)
-	url_visited = models.TextField()
+	url_visited = models.CharField(max_length=100,db_index=True)
 	time_remained_seconds = models.CharField(max_length=150)
 	datetime = models.DateTimeField(auto_now_add=True)
 	campaign = models.CharField(max_length=10, null=True)
-	campaign_key = models.CharField(max_length=250, null=True)
+	campaign_key = models.CharField(max_length=250, null=True, db_index=True)
 
 
 class ConnectionURL(models.Model):
