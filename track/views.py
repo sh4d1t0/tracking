@@ -22,7 +22,9 @@ def generate_unique_id(email=None):
 			return generate_unique_id()
 
 def get_miliseconds(days=1):
-	return 86400000*days
+	import time
+	ms = time.time()*1000.0
+	return (86400000*days) + ms
 
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
