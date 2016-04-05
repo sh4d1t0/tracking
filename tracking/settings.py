@@ -81,8 +81,8 @@ DATABASES = {
         'NAME': 'tracking',
         'HOST': 'localhost',
         'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': 'root'
+        'USER': 'victor',
+        'PASSWORD': 'kaliman14'
     }
 }
 
