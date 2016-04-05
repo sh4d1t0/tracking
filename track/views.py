@@ -1,11 +1,12 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from track.models import Visitor,VisitorTrack, ConnectionURL, URLAccount
 import uuid, json
 from django.views.decorators.csrf import csrf_exempt 
-
-# Create your views here.
-
+from track.forms import LoginForm
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 
 
 def generate_unique_id(email=None):
@@ -21,7 +22,9 @@ def generate_unique_id(email=None):
 			return generate_unique_id()
 
 def get_miliseconds(days=1):
-	return 86400000*days
+	import time
+	ms = time.time()*1000.0
+	return (86400000*days) + ms
 
 def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
@@ -73,3 +76,28 @@ def save_data(request):
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
 
+
+def login_view(request):
+
+	if request.user.is_authenticated():
+		return HttpResponseRedirect('/report/')
+	if request.method == "GET":
+		form = LoginForm()
+	else:
+		form = LoginForm(request.POST)
+		if form.is_valid():
+			user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+			if user is not None:
+				if user.is_active:
+					login(request, user)
+					return HttpResponseRedirect('/report/')
+				else:
+					form.add_error("username", u"Este usuario no esta activo")
+			else:
+				form.add_error("username", u"Por favor compruebe el usuario y contraseñas")
+	return render(request, 'track/login.html', locals())
+
+@login_required
+def logout_view(request):
+	logout(request)
+	return HttpResponseRedirect('/')

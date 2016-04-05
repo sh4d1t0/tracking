@@ -1,0 +1,43 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link href="{% static 'c3/c3.css'%}" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/pathseg.js'%}"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="{% static 'c3/c3.min.js'%}"></script>
+	<script src="{% static 'js/utils.js'%}"></script>
+</head>
+<body>
+	<p>Campaña: {{info_to_return.campaign}}, año: {{info_to_return.year}}, mes: {{info_to_return.month}}, por día</p>
+	<div id="chart"></div>
+	
+	{% autoescape off %}
+	<script>
+		var chart = c3.generate({
+			bindto: '#chart',
+			data: {
+				type: 'bar',
+				x:'dias',
+				columns: [
+					{{info_to_return.days}},
+					{{info_to_return.data}}
+				],
+				onclick: function(d, element){
+					var qs = QueryString();
+					window.location = '/report/url/by/campaign/day?c='+{{info_to_return.campaign}} + '&y=' +{{info_to_return.year}} + '&m=' + qs.m + "&d=" +(d.index+1);
+				}
+			},
+			axis: {
+			 	x: {
+			 		type: 'category' // this needed to load string x value
+			 	}
+    		},
+		});
+	</script>
+	{% endautoescape %}
+
+</body>
+</html>

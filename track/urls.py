@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from track.views import generate_id, test_1, test_2, save_data
+from track.views import generate_id, test_1, test_2, save_data, login_view, logout_view
 
 urlpatterns = [
     url(r'^assign_id/', generate_id),
     url(r'^save_data/', save_data),
+    url(r'^login/', login_view, name="login"),
+    url(r'^logout/', logout_view, name="logout"),
     url(r'^test1/', test_1),
-    url(r'^test2/', test_2),
-    
+    url(r'^test2/', test_2),    
 ]

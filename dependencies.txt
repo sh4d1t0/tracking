@@ -1,0 +1,15 @@
+decorator==4.0.9
+Django==1.9.4
+ecdsa==0.13
+ipython==4.1.2
+ipython-genutils==0.1.0
+MySQL-python==1.2.5
+paramiko==1.16.0
+path.py==8.1.2
+pexpect==4.0.1
+pickleshare==0.6
+ptyprocess==0.5.1
+pycrypto==2.6.1
+simplegeneric==0.8.1
+sshtunnel==0.0.8.1
+traitlets==4.2.1

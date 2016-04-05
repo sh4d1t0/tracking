@@ -1,0 +1,38 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link href="{% static 'c3/c3.css'%}" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/pathseg.js'%}"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="{% static 'c3/c3.min.js'%}"></script>
+	<script src="{% static 'js/utils.js'%}"></script>
+</head>
+<body>
+	<p>Campaña: {{c}}</p>
+	<div id="chart"></div>
+	
+	{% autoescape off %}
+	<script>
+		var chart = c3.generate({
+			bindto: '#chart',
+			data: {
+				type: 'bar',
+				x:'years',
+				columns: [
+					{{info_to_return.years}},
+					{{info_to_return.data}}
+				],
+				onclick: function(d, element){
+					window.location = '/report/url/by/campaign/year/?c='+{{c}}+"&y="+d.x;
+
+				}
+			},
+		});
+	</script>
+	{% endautoescape %}
+
+</body>
+</html>

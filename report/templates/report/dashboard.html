@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link href="{% static 'c3/c3.css'%}" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/pathseg.js'%}"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="{% static 'c3/c3.min.js'%}"></script>
+	<script src="{% static 'js/utils.js'%}"></script>
+
+</head>
+<body>
+	<p>Por dominio</p>
+	<div id="chart"></div>
+
+	<p>Por campaña</p>
+	<div id="chart2"></div>
+	
+	{% autoescape off %}
+	<script>
+	var chart = c3.generate({
+		bindto: '#chart',
+		data: {
+			columns: {{by_domains}},
+        	type : 'pie',
+        	onclick: function(d, element){
+        		window.location = '/report/url/by/domain/?d='+d.id;
+        	}
+   		}
+	});
+	var chart = c3.generate({
+		bindto: '#chart2',
+		data: {
+			columns: {{by_campaign}},
+        	type : 'pie',
+        	'names': {{names_campaign}},
+        	onclick: function(d, element){
+        		window.location = '/report/url/by/campaign/?c='+d.id;
+        	}
+   		}
+	});
+	</script>
+	{% endautoescape %}
+
+</body>
+</html>
