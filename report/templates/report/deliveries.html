@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Deliveries</title>
+	<link href="{% static 'c3/c3.css'%}" rel="stylesheet" type="text/css">
+	<script src="{% static 'js/pathseg.js'%}"></script>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="{% static 'c3/c3.min.js'%}"></script>
+	<script src="{% static 'js/utils.js'%}"></script>
+</head>
+<body>
+	<table border="1">
+		<tr>
+			<td>Nombre</td>
+			<td>Tema</td>
+			<td>Total enviados</td>
+			<td>Entregados</td>
+			<td>Abiertos</td>
+			<td>Clicks</td>
+			<td>Tasa de conversión</td>
+			<td>Fallidos</td>
+		</tr>
+		{% for d in deliveries %}
+			<tr>
+				<td><a href="{% url 'delivery-mdirector' %}?did={{d.id}}">{{d.name}}</a></td>
+				<td>{{d.subject}}</td>
+				<td>{{d.get_total_sent}}</td>
+				<td>{{d.deliveries}} - {{d.get_deliveries_percentage}}%</td>
+				<td>{{d.openings}} - {{d.get_openings_percentage}}%</td>
+				<td>{{d.clicks}} - {{d.get_clicks_percentage}}%</td>
+				<td>{{d.cr}}%</td>
+				<td>{{d.bounces}} - {{d.get_bounces_percentage}}%</td>
+			</tr>
+		{% endfor %}
+	</table>
+</body>
+</html>

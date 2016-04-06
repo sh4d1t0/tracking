@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.db import connection
 from django.db.models import Sum, Count
 from track.models import VisitorTrack, URLAccount
+from mdirector.models import Campaign, Delivery
 from django.http import JsonResponse, Http404
 from django.contrib.auth.decorators import login_required
 import itertools
@@ -101,7 +102,10 @@ def report_year_view(request):
 	return render(request, 'report/url_year.html', locals())
 
 def calculate_percentage(hundred, partial):
-	return (partial*100.0)/hundred
+	try:
+		return (partial*100.0)/hundred
+	except:
+		return 0
 
 @login_required
 def report_url_domain(request):
@@ -168,6 +172,8 @@ def dashboard_user(request):
 	values_campaigns =  new_qs.values('campaign', 'campaign_key')
 	for i,v in enumerate(values_campaigns):
 		names_campaign[str(values_campaigns[i]['campaign_key'])] = str(values_campaigns[i]['campaign'])
+	campaigns_mdirector = Campaign.objects.filter(owner__in=dominios)
+	
 	return render(request, 'report/dashboard.html', locals())
 
 ###By campaign #######3
@@ -261,3 +267,22 @@ def report_campaign_day_view(request):
 				break
 	info_to_return = {'campaign': campaign, 'data': temp_list, 'year': year, 'month': get_month_name(m), 'hours': ['hours'] + get_hours(), 'day': d}
 	return render(request, 'report/campaign_hour.html', locals())
+
+@login_required
+def mdirector_campaigns_view(request):
+	campaign_id = request.GET.get('cid')
+	if not campaign_id:
+		raise Http404
+	deliveries = Delivery.objects.filter(campaign=campaign_id)
+	return render(request, 'report/deliveries.html', locals())
+
+@login_required
+def mdirector_deliveries_view(request):
+	delivery_id = request.GET.get('did')
+	if not delivery_id:
+		raise Http404
+	delivery = Delivery.objects.get(id=delivery_id)
+	data = [['entregados', int(delivery.deliveries)], ['abiertos', int(delivery.openings)], ['fallidos', int(delivery.bounces)], ['clicks', int(delivery.clicks)]]
+	return render(request, 'report/delivery.html', locals())
+
+
