@@ -164,7 +164,7 @@ def dashboard_user(request):
 		l = qs.filter(url_visited__contains=dom)
 		by_domains.append([str(dom), calculate_percentage(total, l.count())])
 	by_campaign = []
-	new_qs = qs.filter(campaign_key__isnull=False).order_by('campaign_key')
+	new_qs = qs.filter(campaign_key__isnull=False).exclude(campaign_key="")order_by('campaign_key')
 	total_campaign = new_qs.count()
 	for m,g in itertools.groupby(new_qs, lambda x: x.campaign_key):
 		by_campaign.append([str(m), calculate_percentage(total_campaign, len(list(g)))])
