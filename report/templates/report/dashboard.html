@@ -17,6 +17,14 @@
 
 	<p>Por campaña</p>
 	<div id="chart2"></div>
+
+	<p>Campañas Mdirector</p>
+	<div>
+		{% for cm in campaigns_mdirector %}
+			<a href="{% url 'campaign-mdirector'%}?cid={{cm.campaign_id}}">{{cm.campaign_name}}</a>
+			<br>
+		{% endfor %}
+	</div>
 	
 	{% autoescape off %}
 	<script>

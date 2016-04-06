@@ -17,7 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from report.views import (report_monthly, report_monthly_view, report_days_view, report_year_view,
     report_url_domain, dashboard_user, report_campaign_view, report_campaign_year_view,
-    report_campaign_month_view, report_campaign_day_view, report_url_day_view)
+    report_campaign_month_view, report_campaign_day_view, report_url_day_view, mdirector_campaigns_view, 
+    mdirector_deliveries_view)
 
 urlpatterns = [
     url(r'^url/by/month/json/$', report_monthly),
@@ -30,5 +31,7 @@ urlpatterns = [
     url(r'^url/by/campaign/year/$', report_campaign_year_view),
     url(r'^url/by/campaign/month/$', report_campaign_month_view),
     url(r'^url/by/campaign/day/$', report_campaign_day_view),
+    url(r'^url/by/campaign/mdirector/$', mdirector_campaigns_view, name="campaign-mdirector"),
+    url(r'^url/by/campaign/delivery/mdirector/$', mdirector_deliveries_view, name="delivery-mdirector"),
     url(r'^$', dashboard_user),
 ]
