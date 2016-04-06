@@ -31,12 +31,10 @@ class Delivery(models.Model):
 
 	def get_bounces_percentage(self):
 		from report.views import calculate_percentage
-		print (4*100.0)/25.0, "WHJAT"
 		return "%.2f" % calculate_percentage(self.get_total_sent(), self.bounces)
 
 	def get_deliveries_percentage(self):
 		from report.views import calculate_percentage
-		print (21*100.0)/25.0, "jj"
 		return "%.2f" % calculate_percentage(self.get_total_sent(), self.deliveries)
 
 	def get_clicks_percentage(self):
