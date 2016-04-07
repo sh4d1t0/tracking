@@ -27,7 +27,7 @@
 				],
 				onclick: function(d, element){
 					var qs = QueryString();
-					window.location = '/report/url/by/campaign/day?c='+{{info_to_return.campaign}} + '&y=' +{{info_to_return.year}} + '&m=' + qs.m + "&d=" +(d.index+1);
+					window.location = '/report/url/by/campaign/day?c='+"{{info_to_return.campaign}}" + '&y=' +{{info_to_return.year}} + '&m=' + qs.m + "&d=" +(d.index+1);
 				}
 			},
 			axis: {
