@@ -19,6 +19,7 @@ def update_campaigns(urlaccount):
 				})
 
 def update_delivery(urlaccount):
+	from report.views import calculate_percentage
 	md = MdirectorAPI(urlaccount.client_key_md, urlaccount.client_secret_md)
 	deliveries = md.Deliveries.get_delivery()
 	info = deliveries['data']['data']
@@ -32,9 +33,19 @@ def update_delivery(urlaccount):
 			de.name = delivery['name']
 		
 		de.subject = delivery['subject']
-		de.bounces = delivery['bounces']
-		de.clicks = delivery['clicks']
-		de.deliveries = delivery['deliveries']
-		de.openings = delivery['openings']
+		de.bounces = int(delivery['bounces'])
+		de.clicks = int(delivery['clicks'])
+		de.deliveries = int(delivery['deliveries'])
+		de.openings = int(delivery['openings'])
+
+		de.total_sent = int(de.deliveries) + int(de.bounces)
+		de.bounces_percentage = calculate_percentage(de.total_sent, de.bounces)
+		de.clicks_percentage =  calculate_percentage(de.deliveries, de.clicks)
+		de.deliveries_percentage = calculate_percentage(de.total_sent, de.deliveries)
+		de.openings_percentage = calculate_percentage(de.deliveries, de.openings)
+		try:
+			de.conversion_rate = (float(de.clicks*100) / de.openings)
+		except:
+			de.conversion_rate = 0
 		de.save()
 
