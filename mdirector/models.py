@@ -15,10 +15,16 @@ class Delivery(models.Model):
 	envid = models.IntegerField()
 	name = models.CharField(max_length=100)
 	subject = models.CharField(max_length=150)
+	total_sent = models.IntegerField()
 	bounces = models.IntegerField()
+	bounces_percentage = models.DecimalField(decimal_places=2, max_digits=14)
 	clicks = models.IntegerField()
+	clicks_percentage = models.DecimalField(decimal_places=2, max_digits=14)
 	deliveries = models.IntegerField()
+	deliveries_percentage = models.DecimalField(decimal_places=2, max_digits=14)
 	openings = models.IntegerField()
+	openings_percentage = models.DecimalField(decimal_places=2, max_digits=14)
+	conversion_rate = models.DecimalField(decimal_places=2, max_digits=14)
 
 	def cr(self):
 		try:
@@ -39,7 +45,7 @@ class Delivery(models.Model):
 
 	def get_clicks_percentage(self):
 		from report.views import calculate_percentage
-		return "%.2f" % calculate_percentage(self.deliveries, self.bounces)
+		return "%.2f" % calculate_percentage(self.deliveries, self.clicks)
 
 
 	def get_openings_percentage(self):
