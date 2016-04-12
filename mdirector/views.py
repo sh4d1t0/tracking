@@ -38,14 +38,18 @@ def update_delivery(urlaccount):
     de.clicks = int(stats['clicks']['net'])
     de.deliveries = int(delivery['deliveries'])
     de.openings = int(stats['opens']['net'])
+    de.openings_total = int(stats['opens']['total'])
 
     de.total_sent = int(de.deliveries) + int(de.bounces)
     de.bounces_percentage = calculate_percentage(de.total_sent, de.bounces)
     de.clicks_percentage =  calculate_percentage(de.deliveries, de.clicks)
     de.deliveries_percentage = calculate_percentage(de.total_sent, de.deliveries)
     de.openings_percentage = calculate_percentage(de.deliveries, de.openings)
+    de.openings_percentage_total = calculate_percentage(de.deliveries, de.openings_total)
     try:
       de.conversion_rate = (float(de.clicks*100) / de.openings)
     except:
       de.conversion_rate = 0
     de.save()
+
+
