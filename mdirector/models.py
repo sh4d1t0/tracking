@@ -23,7 +23,9 @@ class Delivery(models.Model):
 	deliveries = models.IntegerField()
 	deliveries_percentage = models.DecimalField(decimal_places=2, max_digits=14)
 	openings = models.IntegerField()
+	openings_total = models.IntegerField()
 	openings_percentage = models.DecimalField(decimal_places=2, max_digits=14)
+	openings_percentage_total = models.DecimalField(decimal_places=2, max_digits=14)
 	conversion_rate = models.DecimalField(decimal_places=2, max_digits=14)
 
 	def cr(self):
