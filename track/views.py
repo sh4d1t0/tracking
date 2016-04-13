@@ -30,8 +30,8 @@ def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
 	campaign_name = ""
 	if request.GET.get('c'):
-		campaign_name = get_campaign_name(request.META.get('HTTP_ORIGIN'), request.GET.get('c'))
-	url_account = URLAccount.objects.get(domain__contains=request.META.get('HTTP_ORIGIN'))
+		campaign_name = get_campaign_name(request.META.get('HTTP_ORIGIN', request.META.get('HTTP_REFERER')), request.GET.get('c'))
+	url_account = URLAccount.objects.get(domain__contains=request.META.get('HTTP_ORIGIN',request.META.get('HTTP_REFERER')))
 	ends = get_miliseconds(url_account.days_tracking_available)	
 	response = HttpResponse(json.dumps({'id': visitor.id_generated_or_email, 'c': campaign_name, 'ends': ends, 'c_key': request.GET.get('c', "")}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
