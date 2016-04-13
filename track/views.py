@@ -30,6 +30,8 @@ def generate_id(request):
 	visitor = generate_unique_id(request.GET.get('email'))
 	campaign_name = ""
 	if request.GET.get('c'):
+		referer = request.META.get('HTTP_REFERER')
+		origin = request.META.get('HTTP_ORIGIN')
 		campaign_name = get_campaign_name(request.META.get('HTTP_REFERER', request.META.get('HTTP_ORIGIN')), request.GET.get('c'))
 	url_account = URLAccount.objects.get(domain__contains=request.META.get('HTTP_REFERER',request.META.get('HTTP_ORIGIN')))
 	ends = get_miliseconds(url_account.days_tracking_available)	
