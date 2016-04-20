@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Campaign, Delivery
+from .models import Campaign, Delivery, StatsDelivery
 from .mdirectorapi import MdirectorAPI
 
 # Create your views here.
@@ -53,3 +53,29 @@ def update_delivery(urlaccount):
     de.save()
 
 
+
+
+def update_statsdelivery(urlaccount):
+  from report.views import calculate_percentage
+  from datetime import datetime
+  md = MdirectorAPI(urlaccount.client_key_md, urlaccount.client_secret_md)
+  deliveries = Delivery.objects.filter(campaign__owner=urlaccount)
+  stats = md.Stats
+  for delivery in deliveries:
+    opens = stats.get_stats(delivery.envid, "opens")
+    clicks = stats.get_stats(delivery.envid, "clicks")
+    failures = stats.get_stats(delivery.envid, "failures")
+    for _open in opens['data']:
+      campaign = Campaign.objects.get(campaign_name=_open['campaign'], owner=urlaccount)
+      date_object = datetime.strptime(_open['date'], '%Y-%m-%d %H:%M:%S')
+      StatsDelivery.objects.create(campaign=campaign, email=_open['email'], date=date_object)
+
+    for _clicks in clicks['data']:
+      campaign = Campaign.objects.get(campaign_name=_clicks['campaign'], owner=urlaccount)
+      date_object = datetime.strptime(_clicks['date'], '%Y-%m-%d %H:%M:%S')
+      StatsDelivery.objects.create(campaign=campaign, email=_clicks['email'], date=date_object, url=_clicks['url'])
+
+    for _failure in failures['data']:
+      campaign = Campaign.objects.get(campaign_name=_failure['campaign'], owner=urlaccount)
+      date_object = datetime.strptime(_failure['date'], '%Y-%m-%d %H:%M:%S')
+      StatsDelivery.objects.create(campaign=campaign, email=_failure['email'], date=date_object, reason=_failure['reason'])

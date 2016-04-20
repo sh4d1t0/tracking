@@ -53,3 +53,13 @@ class Delivery(models.Model):
 	def get_openings_percentage(self):
 		from report.views import calculate_percentage
 		return "%.2f" % calculate_percentage(self.deliveries, self.openings)
+
+
+class StatsDelivery(models.Model):
+	campaign = models.ForeignKey(Campaign)
+	email = models.CharField(max_length=100)
+	date = models.DateTimeField()
+	url = models.CharField(max_length=200, null=True)
+	reason = models.TextField(null=True)
+	type_stats = models.CharField(max_length=20)
+

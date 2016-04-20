@@ -74,7 +74,7 @@ class DeliveriesAPI(Connection):
 		super(DeliveriesAPI, self).__init__(ck, cs)
 
 class StatsAPI(Connection):
-	def get_stats(self, envid):
+	def get_stats(self, envid, data="summary"):
 		return self.send_request("GET", self.base_url, data={'envid': envid})
 	
 	def __init__(self, ck, cs):
