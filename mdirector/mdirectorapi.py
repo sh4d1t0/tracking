@@ -75,7 +75,7 @@ class DeliveriesAPI(Connection):
 
 class StatsAPI(Connection):
 	def get_stats(self, envid, data="summary"):
-		return self.send_request("GET", self.base_url, data={'envid': envid})
+		return self.send_request("GET", self.base_url, data={'envid': envid, 'data': data})
 	
 	def __init__(self, ck, cs):
 		self.base_url = "http://www.mdirector.com/api_stats"
