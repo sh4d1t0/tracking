@@ -50,11 +50,12 @@ class MDirectorDaemon(Daemon):
 
   def run(self):
   	from track.models import URLAccount
-  	from mdirector.views import update_campaigns, update_delivery
+  	from mdirector.views import update_campaigns, update_delivery, update_statsdelivery
   	url_account = URLAccount.objects.filter(active=True, _client_key_md__isnull=False, _client_secret_md__isnull=False)
   	for url in url_account:
   		update_campaigns(url)
   		update_delivery(url)
+      update_statsdelivery(url)
 
 
 
