@@ -40,6 +40,15 @@ def generate_id(request):
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
 
+def match_email_organic_lead(request):
+	organic_lead = request.GET.get('organic_lead')
+	organic_lead_object = Visitor.objects.get(id_generated_or_email=organic_lead)
+	email_organic = request.GET.get('email_organic_lead')
+	organic_lead_object.email_organic_lead = email_organic
+	organic_lead.save()
+	return HttpResponse({'ok': 'ok'})
+
+
 def get_campaign_name(url, campaign):
 	from sshtunnel import SSHTunnelForwarder
 	obj_url = ConnectionURL.objects.get(url__contains=url)

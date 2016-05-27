@@ -36,6 +36,8 @@ class URLAccount(models.Model):
 class Visitor(models.Model):
 	datetime = models.DateTimeField(auto_now_add=True)
 	id_generated_or_email = models.CharField(max_length=200, unique=True)
+	email_organic_lead = models.CharField(max_length=125, null=True)
+	date_update = models.DateTimeField(auto_now=True)
 
 class VisitorTrack(models.Model):
 	visitor = models.ForeignKey(Visitor)
