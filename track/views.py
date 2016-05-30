@@ -44,6 +44,7 @@ def match_email_organic_lead(request):
 	organic_lead = request.GET.get('organic_lead')
 	organic_lead_object = Visitor.objects.get(id_generated_or_email=organic_lead)
 	values = request.GET.get('data', {})
+	print request.GET
 	if type(values) != dict:
 		if type(values) in (unicode, str):
 			values = eval(values)
