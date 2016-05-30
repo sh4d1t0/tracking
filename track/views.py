@@ -57,7 +57,7 @@ def match_email_organic_lead(request):
 		for mapp in mapping_data_visitor_data:
 			setattr(organic_lead_object, mapp.name_field_table, values[mapp.name_field])
 		organic_lead_object.save()
-	else:
+	
 	response = HttpResponse(json.dumps({"ok": "ok"}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
 	return response
