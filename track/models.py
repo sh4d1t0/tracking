@@ -32,6 +32,10 @@ class URLAccount(models.Model):
 	client_key_md = property(get_client_key_md, set_client_key_md)
 
 
+class MappingVisitorData(models.Model):
+	name_field = models.CharField(max_length=100)
+	name_field_table = models.CharField(max_length=100)
+	active = models.BooleanField(default=True)
 
 class Visitor(models.Model):
 	datetime = models.DateTimeField(auto_now_add=True)

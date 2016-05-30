@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^logout/', logout_view, name="logout"),
     url(r'^test1/', test_1),
     url(r'^test2/', test_2),
-    url(r'^match_email_organic_lead/', match_email_organic_lead),
+    url(r'^match_organic_lead/', match_email_organic_lead),
 ]

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
-from track.models import Visitor,VisitorTrack, ConnectionURL, URLAccount
+from track.models import Visitor,VisitorTrack, ConnectionURL, URLAccount, MappingVisitorData
 import uuid, json
 from django.views.decorators.csrf import csrf_exempt 
 from track.forms import LoginForm
@@ -43,9 +43,18 @@ def generate_id(request):
 def match_email_organic_lead(request):
 	organic_lead = request.GET.get('organic_lead')
 	organic_lead_object = Visitor.objects.get(id_generated_or_email=organic_lead)
-	email_organic = request.GET.get('email_organic_lead')
-	organic_lead_object.email_organic_lead = email_organic
-	organic_lead.save()
+	values = request.GET.get('data', {})
+	if type(values) != dict:
+		if type(values) in (unicode, str):
+			values = eval(values)
+		else:
+			return HttpResponse({'error': 'error'})
+	keys = values.keys()
+	mapping_data_visitor_data = MappingVisitorData.objects.filter(name_field__in=keys, active=True)
+	if mapping_data_visitor_data.count():
+		for mapp in mapping_data_visitor_data:
+			setattr(organic_lead_object, mapp.name_field_table, values[mapp.name_field])
+		organic_lead_object.save()
 	return HttpResponse({'ok': 'ok'})
 
 
