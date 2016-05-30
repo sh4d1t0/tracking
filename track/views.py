@@ -56,9 +56,6 @@ def match_email_organic_lead(request):
 	keys = values.keys()
 
 	mapping_data_visitor_data = MappingVisitorData.objects.filter(name_field__in=keys, active=True)
-	print mapping_data_visitor_data
-	print keys
-	print values
 	if mapping_data_visitor_data.count():
 		for mapp in mapping_data_visitor_data:
 			setattr(organic_lead_object, mapp.name_field_table, values[mapp.name_field])
