@@ -1,6 +1,6 @@
 from django.shortcuts import render
 
-from .models import Campaign, Delivery, StatsDelivery
+from .models import Campaign, Delivery, StatsDelivery, DataUpdate
 from .mdirectorapi import MdirectorAPI
 
 # Create your views here.
@@ -60,23 +60,47 @@ def update_statsdelivery(urlaccount):
   from datetime import datetime
   md = MdirectorAPI(urlaccount.client_key_md, urlaccount.client_secret_md)
   deliveries = Delivery.objects.filter(campaign__owner=urlaccount)
+  
+  dataupdateopens = DataUpdate.objects.get_or_create(url_acccount=urlaccount, data_type="opens",
+    defaults={'url_acccount': urlaccount, 'data_type': 'opens', 'last_update':0})[0]
+  
+  dataupdateclicks = DataUpdate.objects.get_or_create(url_acccount=urlaccount, data_type="clicks",
+    defaults={'url_acccount': urlaccount, 'data_type': 'clicks', 'last_update':0})[0]
+  
+  dataupdatefailures = DataUpdate.objects.get_or_create(url_acccount=urlaccount, data_type="failures",
+    defaults={'url_acccount': urlaccount, 'data_type': 'failures', 'last_update':0})[0]
+
   stats = md.Stats
   for delivery in deliveries:
     opens = stats.get_stats(delivery.envid, data="opens")
     clicks = stats.get_stats(delivery.envid, data="clicks")
     failures = stats.get_stats(delivery.envid, data="failures")
-    for _open in opens['data']:
-      campaign = Campaign.objects.get(campaign_name=_open['campaign'], owner=urlaccount)
-      date_object = datetime.strptime(_open['date'], '%Y-%m-%d %H:%M:%S')
-      StatsDelivery.objects.create(campaign=campaign, email=_open['email'], date=date_object, type_stats="opens")
 
-    for _clicks in clicks['data']:
-      campaign = Campaign.objects.get(campaign_name=_clicks['campaign'], owner=urlaccount)
-      date_object = datetime.strptime(_clicks['date'], '%Y-%m-%d %H:%M:%S')
-      StatsDelivery.objects.create(campaign=campaign, email=_clicks['email'], date=date_object, url=_clicks['url'], type_stats="clicks")
+    opens_total = opens['total']
+    clicks_total = clicks['total']
+    failures_total = failures['total']
 
-    for _failure in failures['data']:
-      campaign = Campaign.objects.get(campaign_name=_failure['campaign'], owner=urlaccount)
-      date_object = datetime.strptime(_failure['date'], '%Y-%m-%d %H:%M:%S')
-      StatsDelivery.objects.create(campaign=campaign, email=_failure['email'], date=date_object, reason=_failure['reason'], type_stats="failures")
+    if opens_total > dataupdateopens.last_update:
+      for _open in opens['data'][dataupdateopens.last_update:]:
+        campaign = Campaign.objects.get(campaign_name=_open['campaign'], owner=urlaccount)
+        date_object = datetime.strptime(_open['date'], '%Y-%m-%d %H:%M:%S')
+        StatsDelivery.objects.create(campaign=campaign, email=_open['email'], date=date_object, type_stats="opens")
+      dataupdateopens.last_update = opens_total
+      dataupdateopens.save()
+    
+    if clicks_total > dataupdateclicks.last_update:
+      for _clicks in clicks['data'][dataupdateclicks.last_update:]:
+        campaign = Campaign.objects.get(campaign_name=_clicks['campaign'], owner=urlaccount)
+        date_object = datetime.strptime(_clicks['date'], '%Y-%m-%d %H:%M:%S')
+        StatsDelivery.objects.create(campaign=campaign, email=_clicks['email'], date=date_object, url=_clicks['url'], type_stats="clicks")
+      dataupdateclicks.last_update = clicks_total
+      dataupdateclicks.save()
+
+    if clicks_total > dataupdatefailures.last_update:
+      for _failure in failures['data'][dataupdatefailures.last_update:]:
+        campaign = Campaign.objects.get(campaign_name=_failure['campaign'], owner=urlaccount)
+        date_object = datetime.strptime(_failure['date'], '%Y-%m-%d %H:%M:%S')
+        StatsDelivery.objects.create(campaign=campaign, email=_failure['email'], date=date_object, reason=_failure['reason'], type_stats="failures")
+      dataupdatefailures.last_update = failures_total
+      dataupdatefailures.save()
 

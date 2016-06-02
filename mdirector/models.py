@@ -63,3 +63,12 @@ class StatsDelivery(models.Model):
 	reason = models.TextField(null=True)
 	type_stats = models.CharField(max_length=20)
 
+
+
+class DataUpdate(models.Model):
+	url_acccount = models.ForeignKey('track.URLAccount')
+	last_update = models.IntegerField()
+	data_type = models.CharField(max_length=20)
+
+	class Meta:
+		unique_together = ('url_acccount', 'last_update', 'data_type')
