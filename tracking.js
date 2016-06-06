@@ -83,7 +83,7 @@
 	TrackDash.prototype._assign_id = function(email, c){
 		var that = this;
 		$.ajax({
-			'url':'http://192.152.282.101:8000/track/assign_id/',
+			'url':'http://192.152.28.101:8000/track/assign_id/',
 			'data': {'email': email, 'c': c, 'host': window.location.hostname},
 			'success': function(data){
 				that.setId (data.id);
@@ -100,7 +100,7 @@
 		info['domain'] = window.location.origin;
 		info['url'] = window.location.href;
 		$.ajax({
-			'url': 'http://192.152.282.101:8000/track/event/',
+			'url': 'http://192.152.28.101:8000/track/event/',
 			'data':{"data": JSON.stringify(info)}
 		});
 
@@ -144,7 +144,7 @@
 		var that = this;
 		if(this.getId()){
 			$.ajax({
-				'url': 'http://192.152.282.101:8000/track/save_data/',
+				'url': 'http://192.152.28.101:8000/track/save_data/',
 				'async': false,
 				'data':{'page': that.getPage(), 'time': that.getTime(),
 						"id": that.getId(), 'c': that.getCampaign(), 'c_key': that.getCampaignKey()}
@@ -163,7 +163,7 @@
 				});
 				if(that.getId()){
 					$.ajax({
-						'url': 'http://192.152.282.101:8000/track/match_organic_lead/',
+						'url': 'http://192.152.28.101:8000/track/match_organic_lead/',
 						'async': false,
 						'data':{'organic_lead': that.getId(), "data": JSON.stringify($values) }
 					});
