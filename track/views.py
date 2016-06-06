@@ -2,7 +2,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from track.models import Visitor,VisitorTrack, ConnectionURL, URLAccount, MappingVisitorData
-import uuid, json
+import uuid, json, datetime
 from django.views.decorators.csrf import csrf_exempt 
 from track.forms import LoginForm
 from django.contrib.auth import authenticate, login, logout
@@ -44,7 +44,6 @@ def match_email_organic_lead(request):
 	organic_lead = request.GET.get('organic_lead')
 	organic_lead_object = Visitor.objects.get(id_generated_or_email=organic_lead)
 	values = request.GET.get('data', {})
-	print request.GET
 	if type(values) != dict:
 		if type(values) in (unicode, str):
 			values = eval(values)
@@ -63,6 +62,19 @@ def match_email_organic_lead(request):
 	
 	response = HttpResponse(json.dumps({"ok": "ok"}), content_type='application/json')
 	response['Access-Control-Allow-Origin'] = "*"
+	return response
+
+def register_event(request):
+	data = json.loads(request.GET.get('data', {}))
+	data['timestamp'] = datetime.datetime.now()
+	response = HttpResponse(content_type='application/json')
+	response['Access-Control-Allow-Origin'] = "*"
+	if not data.get('event'):
+		response.content = json.dumps({"error": "There is no event, nothing to register"})
+	else:
+		from track import events_collection
+		events_collection.insert(data)
+		response.content = json.dumps({"ok": "ok"})
 	return response
 
 
