@@ -31,7 +31,7 @@ class MongoDB(object):
     return self.db
 
   def conectar(self, *args, **kwargs):
-    self.cliente = MongoClient(*args, **kwargs) # raise ConnectionFailure
+    self.cliente = MongoClient(*args, **kwargs, connect=False) # raise ConnectionFailure
 
     if self.username and self.source:
         self[self.source].authenticate(self.username, self.password) # raise PyMongoError
