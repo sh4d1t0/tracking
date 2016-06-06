@@ -72,7 +72,10 @@ def register_event(request):
 	if not data.get('event'):
 		response.content = json.dumps({"error": "There is no event, nothing to register"})
 	else:
-		from track import events_collection
+		from track.mongo import MongoDB
+		from django.conf import settings
+		cliente_mongo = MongoDB(username=settings.MONGO_USERNAME, password=settings.MONGO_PWD, source=settings.MONGO_DB)
+		events_collection = cliente_mongo.Events
 		events_collection.insert(data)
 		response.content = json.dumps({"ok": "ok"})
 	return response
